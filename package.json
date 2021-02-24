@@ -1,0 +1,29 @@
+{
+  "name": "clipboard-palette",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --dir --mac --x64"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "electron": "^10.1.5",
+    "electron-builder": "^22.9.1"
+  },
+  "build": {
+    "appId": "local.cozy.clipboard-palette",
+    "directories": {
+      "output": "dist"
+    },
+    "extraResources": [
+      "./assets/**"
+    ],
+    "mac": {
+      "target": "dmg",
+      "extendInfo": {}
+    }
+  }
+}
