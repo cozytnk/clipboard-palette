@@ -5,9 +5,11 @@ const { app, Tray, Menu, MenuItem, clipboard, shell, Notification } = require('e
 const assetsDirectory = app.isPackaged ? process.resourcesPath + `/assets` : './assets'
 // TODO: auto-switch light/dark icon
 const iconPath = assetsDirectory + `/Palette icon 6 -16x16-fff.png`
-const settingsPath = assetsDirectory + `/settings.json`
+const settingsPath = assetsDirectory + `/settings.js`
+
 
 let tray = null
+
 
 const notify = body => {
   new Notification({
@@ -24,11 +26,18 @@ const updateMenu = () => {
 
   let texts
   try {
-    texts = JSON.parse(fs.readFileSync(settingsPath, 'utf8'))
+    texts = require(settingsPath)
+    delete require.cache[require.resolve(settingsPath)]
+
+    if (JSON.stringify(texts) === '{}') {
+      notify(`invalid module.exports`)
+      texts = []
+    }
   } catch (err) {
     notify(err.toString())
     texts = []
   }
+
   for (const text of texts) {
     menu.append(new MenuItem({
       label: text,
@@ -55,11 +64,11 @@ app.dock.hide()
 
 app.on('ready', () => {
   tray = new Tray(iconPath)
-  tray.on('mouse-move', () => tray.popUpContextMenu())
+  tray.on('mouse-enter', () => tray.popUpContextMenu())
   updateMenu()
 })
 
 app.on('quit', () => {
-  console.log('app.quit')
+  console.log('@app.quit')
 })
 
